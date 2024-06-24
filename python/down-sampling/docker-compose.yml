@@ -4,8 +4,8 @@ services:
     mc-scheduler:
         build:  
             context: .
-        container_name: mc-scheduler
-        image: mc-scheduler:v1.0
+        container_name: mc-scheduler_v0.1
+        image: mc-scheduler:v0.1
         restart: always
         command: >
             /bin/bash -c "
@@ -22,8 +22,8 @@ services:
                 airflow users create --username admin --password admin --email admin@innogrid.com --firstname admin --lastname admin --role Admin
 
                 # Import variables & Make connections
-                airflow variables import -a overwrite /usr/local/airflow/airflow_variables.json
-                airflow connections add --conn-type mysql --conn-host 127.0.0.1  --conn-schema mc_temp --conn-login root --conn-password 1234 --conn-port 3306 mcmp
+                airflow variables set --description 'Agent API_BASE_URL' API_BASE_URL ${API_BASE_URL}
+                airflow connections add --conn-type mysql --conn-host ${MYSQL_HOST} --conn-schema ${MYSQL_SCHEMA} --conn-login ${MYSQL_USER} --conn-password ${MYSQL_PASSWORD} --conn-port ${MYSQL_PORT} mcmp
 
                 # Reload & Run dags
                 airflow dags reserialize
@@ -31,12 +31,14 @@ services:
                 airflow dags unpause down_sampling
 
                 # Start airflow
-                airflow scheduler & airflow webserver -p 9001
+                airflow scheduler & airflow webserver -p ${AIRFLOW_PORT}
 
                 # Keep the server on no matter what
                 sleep infinity
             "
+        env_file:
+            - .env
         volumes:
-                - ./mc-airflow/airflow-home:/usr/local/airflow
+            - ./scheduler_env/airflow-home:/usr/local/airflow
         network_mode: "host"
 

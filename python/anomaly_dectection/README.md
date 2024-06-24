@@ -14,11 +14,11 @@ git clone https://github.com/m-cmp/mc-observability/python <YourFolderName>
 pip install -r requirements.txt
 ```
 3) Install all packages according to your version using requirements.txt.
-4) runs the VM anomaly detection function using the API. 
-5) Run FastAPI server 
+4) Run FastAPI server 
 ```shell
 python main.py
 ```
+5) runs the VM anomaly detection function using the API.
 
 
 ## API Use guide
